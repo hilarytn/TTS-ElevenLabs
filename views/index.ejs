@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text to Speech - Eleven Labs</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; text-align: center; }
+    input, textarea { width: 60%; padding: 10px; margin: 10px auto; display: block; }
+    button { padding: 10px 20px; }
+  </style>
+</head>
+<body>
+  <h1>🔊 Eleven Labs Text to Speech</h1>
+  <form id="tts-form">
+    <textarea name="text" rows="4" placeholder="Type something..." required></textarea>
+    <button type="submit">🎤 Speak</button>
+  </form>
+
+  <audio id="audio" controls hidden></audio>
+
+  <script>
+    const form = document.getElementById("tts-form");
+    const audio = document.getElementById("audio");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(form);
+      const response = await fetch("/speak", {
+        method: "POST",
+        body: new URLSearchParams(formData),
+      });
+
+      const audioBlob = await response.blob();
+      const audioUrl = URL.createObjectURL(audioBlob);
+      audio.src = audioUrl;
+      audio.hidden = false;
+      audio.play(); // Auto-play once audio is ready
+    });
+  </script>
+</body>
+</html>
